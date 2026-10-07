@@ -1,0 +1,16 @@
+{
+  "name": "docker-production-mistakes-demo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Dockerfile Doctor — score a Dockerfile against the 10 production mistakes, then watch layers and build context leak secrets.",
+  "scripts": {
+    "start": "node app/server.js",
+    "scan": "node scripts/scan-examples.mjs",
+    "test": "node --test \"test/*.test.mjs\"",
+    "check": "npm test && npm run scan"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

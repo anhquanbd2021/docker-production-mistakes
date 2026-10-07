@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Score a Dockerfile against 10 production mistakes, then watch layers and build context leak secrets.">
+  <title>Dockerfile Doctor — 10 production mistakes lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="/styles.css">
+<!-- pb-shell --><link rel="stylesheet" href="./pb-shell.css"><!-- pb-shell --><!-- pb-back --><link rel="stylesheet" href="./pb-back.css"><!-- pb-back --></head>
+<body>
+<a class="skip-link" href="#dockerfile">Skip to the Dockerfile</a>
+<main>
+  <nav aria-label="Primary"><a aria-current="page" href="/">Lab</a><a href="/guide.html">Guide</a><a href="https://github.com/anhquanbd2021/docker-production--mistakes">Source</a></nav>
+  <header class="hero">
+    <div><p class="eyebrow">Dockerfile Doctor · 10 production checks</p><h1>Localhost passes everything.</h1><p class="lede">Paste a Dockerfile — or load an example — and score it against the ten mistakes that only bite in production. Then open the labs to see <em>why</em> a deleted secret still leaks and what <code>COPY . .</code> really ships.</p></div>
+    <p class="warning"><strong>Safe educational demo.</strong> All analysis runs locally in your browser — nothing is uploaded, nothing is built, no container ever starts.</p>
+  </header>
+
+  <section class="workspace" aria-label="Dockerfile scanner">
+    <section class="panel controls" aria-labelledby="editor-title">
+      <div><p class="eyebrow">Scanner</p><h2 id="editor-title">Dockerfile under review</h2></div>
+      <label for="preset">Example<select id="preset"></select></label>
+      <label for="dockerfile">Dockerfile<textarea id="dockerfile" rows="14" spellcheck="false"></textarea></label>
+      <div class="toggles">
+        <label><input type="checkbox" id="has-dockerignore"> repo has a <code>.dockerignore</code></label>
+        <label><input type="checkbox" id="has-limits"> deploy sets memory/CPU limits</label>
+      </div>
+      <button id="scan" type="button">Run the 10 checks</button>
+      <p class="muted">Checks 1 and 10 live outside the Dockerfile — the toggles supply that evidence.</p>
+    </section>
+
+    <section class="panel visualizer" aria-labelledby="results-title">
+      <div class="section-heading"><div><p class="eyebrow">Report</p><h2 id="results-title">Verdict</h2></div><span id="score" class="badge" role="status" aria-live="polite">Ready</span></div>
+      <ol id="results" class="results" aria-label="Check results"></ol>
+    </section>
+  </section>
+
+  <section class="workspace" aria-label="Layer lab">
+    <section class="panel" aria-labelledby="layers-title">
+      <div><p class="eyebrow">Layer lab</p><h2 id="layers-title">A layer you ship can never be edited</h2></div>
+      <ol id="layer-stack" class="layers" aria-label="Simulated layer stack"></ol>
+    </section>
+    <section class="panel" aria-labelledby="views-title">
+      <div><p class="eyebrow">Two audiences, two truths</p><h2 id="views-title">Container vs. anyone who pulls</h2></div>
+      <div class="comparison">
+        <article><p class="eyebrow success-text">Running container sees</p><pre id="container-view">—</pre></article>
+        <article><p class="eyebrow danger-text">docker history / pull recovers</p><pre id="pull-view">—</pre></article>
+      </div>
+      <p class="muted">The <code>rm</code> in a later layer only masks the file in the merged view — the adding layer still carries it.</p>
+    </section>
+  </section>
+
+  <section class="workspace" aria-label="Context lab">
+    <section class="panel" aria-labelledby="context-title">
+      <div><p class="eyebrow">Context lab</p><h2 id="context-title">What <code>COPY . .</code> sweeps in</h2></div>
+      <label for="dockerignore">.dockerignore<textarea id="dockerignore" rows="9" spellcheck="false"></textarea></label>
+      <p class="muted">Edit the file — the file list re-splits instantly. <code>*</code>, <code>**</code>, <code>!</code> and directory prefixes supported.</p>
+    </section>
+    <section class="panel" aria-labelledby="sweep-title">
+      <div class="section-heading"><div><p class="eyebrow">Build context</p><h2 id="sweep-title">Repo checkout</h2></div><span id="sweep-count" class="badge">—</span></div>
+      <ul id="file-list" class="files" aria-label="Files sent to the build"></ul>
+    </section>
+  </section>
+
+  <p><a href="/guide.html">Read the fix guide</a> · <a href="https://github.com/anhquanbd2021/docker-production--mistakes">Inspect source and tests</a></p>
+</main>
+<script type="module" src="/app.js"></script>
+<!-- pb-shell --><a class="pb-shell" href="https://github.com/anhquanbd2021/docker-production-mistakes" title="docker-production-mistakes — an Article Playbook demo (view source)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2" y="2" width="9" height="9" rx="2" fill="#2dd4bf"/><rect x="13" y="2" width="9" height="9" rx="2" fill="#2dd4bf" opacity=".45"/><rect x="2" y="13" width="9" height="9" rx="2" fill="#2dd4bf" opacity=".45"/><rect x="13" y="13" width="9" height="9" rx="4.5" fill="#2dd4bf"/></svg><b>docker-production-mistakes</b><i>DEMO</i></a><!-- pb-shell --><!-- pb-back --><a class="pb-back" id="pb-back" href="https://github.com/anhquanbd2021/docker-production-mistakes" title="Back to the article — docker-production-mistakes">← Article <i>PLAYBOOK</i></a><script>(function(){var a=document.getElementById('pb-back');if(!a)return;var h=location.hostname;if(/^(localhost|127\.0\.0\.1|192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)/.test(h)){a.href='//'+h+':'+(/^(localhost|127\.0\.0\.1)$/.test(h)?'1234':'30082')+'/microsites/article.html?slug=docker-production-mistakes';}})();</script><!-- pb-back --></body>
+</html>
